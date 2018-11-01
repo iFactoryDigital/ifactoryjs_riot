@@ -1,0 +1,23 @@
+{
+  "name": "@edenjs/riot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eden-js/riot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/eden-js/riot/issues"
+  },
+  "homepage": "https://github.com/eden-js/riot#readme",
+  "dependencies": {
+    "gulp-riot": "^1.1.5",
+    "riot": "^3.13.0"
+  }
+}
