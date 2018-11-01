@@ -9,8 +9,6 @@ const header     = require('gulp-header');
 const rename     = require('gulp-rename');
 const sourcemaps = require('gulp-sourcemaps');
 
-console.log(config);
-
 // Require local dependencies
 const config = require('config');
 
