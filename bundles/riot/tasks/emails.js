@@ -9,6 +9,8 @@ const header     = require('gulp-header');
 const rename     = require('gulp-rename');
 const sourcemaps = require('gulp-sourcemaps');
 
+console.log(config);
+
 // Require local dependencies
 const config = require('config');
 
@@ -17,7 +19,7 @@ const config = require('config');
  *
  * @task emails
  */
-class emailTask {
+class EmailTask {
 
   /**
    * Construct riot task class
@@ -115,6 +117,6 @@ class emailTask {
 /**
  * Export email task
  *
- * @type {emailTask}
+ * @type {EmailTask}
  */
-exports = module.exports = emailTask;
+exports = module.exports = EmailTask;

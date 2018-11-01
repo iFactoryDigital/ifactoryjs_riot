@@ -2,12 +2,12 @@
 
 // Require dependencies
 const socket     = require('socket');
-const controller = require('controller');
+const Controller = require('controller');
 
 /**
  * Build alert controller
  */
-class riotController extends controller {
+class RiotController extends Controller {
 
   /**
    * Construct example controller class
@@ -52,4 +52,4 @@ class riotController extends controller {
  *
  * @type {alertController}
  */
-exports = module.exports = riotController;
+exports = module.exports = RiotController;

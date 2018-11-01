@@ -2,7 +2,7 @@
 
 // Require dependencies
 const socket = require('socket');
-const helper = require('helper');
+const Helper = require('helper');
 
 // Require models
 const user = model('user');
@@ -10,7 +10,7 @@ const user = model('user');
 /**
  * Build riot controller
  */
-class riotHelper extends helper {
+class RiotHelper extends Helper {
 
   /**
    * Construct riot helper class
@@ -42,8 +42,8 @@ class riotHelper extends helper {
 }
 
 /**
- * Export riot controller
+ * Export Riot controller
  *
- * @type {riotHelper}
+ * @type {RiotHelper}
  */
-exports = module.exports = new riotHelper();
+exports = module.exports = new RiotHelper();

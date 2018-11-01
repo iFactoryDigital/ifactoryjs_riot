@@ -19,7 +19,7 @@ const config = require('config');
  * @after    javascript
  * @priority 1
  */
-class riotTask {
+class RiotTask {
 
   /**
    * Construct riot task class
@@ -130,6 +130,6 @@ class riotTask {
 /**
  * Export riot task
  *
- * @type {riotTask}
+ * @type {RiotTask}
  */
-exports = module.exports = riotTask;
+exports = module.exports = RiotTask;

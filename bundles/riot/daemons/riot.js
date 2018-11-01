@@ -2,7 +2,7 @@
 // Require dependencies
 const riot   = require('riot');
 const path   = require('path');
-const daemon = require('daemon');
+const Daemon = require('daemon');
 
 /**
  * Build riot dameon class
@@ -10,7 +10,7 @@ const daemon = require('daemon');
  * @compute
  * @express
  */
-class riotDaemon extends daemon {
+class RiotDaemon extends Daemon {
 
   /**
    * Construct riot daemon class
@@ -68,6 +68,6 @@ class riotDaemon extends daemon {
 /**
  * Export riot daemon class
  *
- * @type {riotDaemon}
+ * @type {RiotDaemon}
  */
-exports = module.exports = riotDaemon;
+exports = module.exports = RiotDaemon;
