@@ -4,13 +4,13 @@ riot.mixin('layout', {
   /**
    * On init function
    */
-  'init' : function () {
+  init() {
     // Set private variables
     this.__page = false;
     this.__init = this.__init || {};
 
     // Set store
-    this.__store = this.__store || require('default/public/js/store');
+    this.__store = this.__store || require('default/public/js/store'); // eslint-disable-line global-require
 
     // Clear if not frontend
     if (typeof window === 'undefined' && Object.keys(this.opts).length) this.__store.clear();
@@ -56,7 +56,7 @@ riot.mixin('layout', {
    *
    * @returns {*}
    */
-  '__route' : function (opts) {
+  __route(opts) {
     // Reset opts if includes state
     this.state = opts.state ? opts.state : this.state;
 
@@ -71,5 +71,8 @@ riot.mixin('layout', {
 
     // Trigger mount
     if (this.refs.page) this.refs.page.trigger('mount');
-  }
+
+    // Return null
+    return null;
+  },
 });

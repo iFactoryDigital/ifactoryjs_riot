@@ -1,6 +1,6 @@
 
 riot.mixin({
-  'init' : function () {
+  init() {
     // Check opts
     if (this.opts.opts) {
       // Loop object keys
@@ -23,7 +23,7 @@ riot.mixin({
        *
        * @param {String} route
        */
-      'go' : (route) => {
+      go : (route) => {
         // Run on store
         if (!this.eden.frontend) return;
 
@@ -38,7 +38,7 @@ riot.mixin({
        *
        * @returns {*}
        */
-      'get' : (key) => {
+      get : (key) => {
         // Return private method
         return this.___get(key);
       },
@@ -51,7 +51,7 @@ riot.mixin({
        *
        * @returns {*}
        */
-      'set' : (key, value) => {
+      set : (key, value) => {
         // Return private method
         return this.___set(key, value);
       },
@@ -61,7 +61,7 @@ riot.mixin({
        *
        * @returns {*}
        */
-      'root' : () => {
+      root : () => {
         // Return private method
         return this.___root();
       },
@@ -69,13 +69,13 @@ riot.mixin({
       /**
        * Sets eden store
        */
-      'store' : require('default/public/js/store'),
+      store : require('default/public/js/store'), // eslint-disable-line global-require
 
       /**
        * Sets frontend/backend value
        */
-      'backend'  : (typeof window === 'undefined'),
-      'frontend' : (typeof window !== 'undefined')
+      backend  : (typeof window === 'undefined'),
+      frontend : (typeof window !== 'undefined'),
     };
 
     // On mount or update
@@ -99,7 +99,7 @@ riot.mixin({
    *
    * @private
    */
-  '___root' : function () {
+  ___root() {
     // Check parent
     if (this.__root) return this.__root;
 
@@ -109,14 +109,15 @@ riot.mixin({
 
     // Loop for main parent
     while (nparent) {
-      parent  = nparent;
+      parent = nparent;
       nparent = parent.parent;
     }
 
     // Check parentnode
+    // eslint-disable-next-line no-underscore-dangle
     if (parent.root && parent.root.parentNode && parent.root.parentNode._tag) {
       // Set parent
-      parent = parent.root.parentNode._tag;
+      parent = parent.root.parentNode._tag; // eslint-disable-line no-underscore-dangle
     }
 
     // Set root
@@ -131,8 +132,9 @@ riot.mixin({
    *
    * @param {Strin} key
    */
-  '___get' : function (key) {
+  ___get(key) {
     // Get value
+    // eslint-disable-next-line no-underscore-dangle
     let value = (this.___root().opts[key] || this.___root().__init[key] || (typeof window !== 'undefined' ? window.eden[key] : false));
 
     // Check store
@@ -152,11 +154,11 @@ riot.mixin({
    * @return {*}
    * @private
    */
-  '___set' : function (key, value) {
+  ___set(key, value) {
     // Set value
     this.eden.store.set(key, value);
 
     // Update view
     this.update();
-  }
+  },
 });

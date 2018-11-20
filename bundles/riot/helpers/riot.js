@@ -11,11 +11,10 @@ const user = model('user');
  * Build riot controller
  */
 class RiotHelper extends Helper {
-
   /**
    * Construct riot helper class
    */
-  constructor () {
+  constructor() {
     // Run super
     super();
 
@@ -32,11 +31,11 @@ class RiotHelper extends Helper {
    *
    * @private
    */
-  async state (send, url, opts) {
+  async state(send, url, opts) {
     // Send user alert
     return await socket[send instanceof user ? 'user' : 'session'](send, 'state', {
-      'url'  : url,
-      'opts' : opts
+      url,
+      opts,
     });
   }
 }
@@ -46,4 +45,4 @@ class RiotHelper extends Helper {
  *
  * @type {RiotHelper}
  */
-exports = module.exports = new RiotHelper();
+module.exports = new RiotHelper();

@@ -13,21 +13,20 @@ window.riot = riot;
 /**
  * Build riot frontend class
  */
-class riotFrontend extends events {
-
+class RiotFrontend extends events {
   /**
    * Construct riot frontend
    */
-  constructor () {
+  constructor(...args) {
     // Run super
-    super(...arguments);
+    super(...args);
 
     // Bind methods
-    this._mount  = this._mount.bind(this);
+    this._mount = this._mount.bind(this);
     this._layout = this._layout.bind(this);
 
     // Frontend hooks
-    store.on('layout',     this._layout);
+    store.on('layout', this._layout);
     store.on('initialize', this._mount);
   }
 
@@ -36,9 +35,9 @@ class riotFrontend extends events {
    *
    * @param {Object} state
    */
-  _mount (state) {
+  _mount(state) {
     // Mount riot tag
-    this._mounted = riot.mount(document.querySelector('body').children[0], state)[0];
+    [this._mounted] = riot.mount(document.querySelector('body').children[0], state);
   }
 
   /**
@@ -49,12 +48,12 @@ class riotFrontend extends events {
    * @private
    * @return {Boolean}
    */
-  _layout (state) {
+  _layout(state) {
     // Set layout variable
-    let layout = (state.mount.layout || 'main-layout');
+    const layout = (state.mount.layout || 'main-layout');
 
     // Get current layout
-    let current = document.querySelector('body').children[0];
+    const current = document.querySelector('body').children[0];
 
     // Check if layout needs replacing
     if (current.tagName.toLowerCase() === layout.toLowerCase()) {
@@ -67,20 +66,24 @@ class riotFrontend extends events {
     // Replace with
     jQuery(current).replaceWith(document.createElement(layout));
 
-    // Add c;ass
+    // Add class
     jQuery(document.querySelector('body').children[0]).addClass('eden-layout');
 
     // Mount new tag
-    this._mounted = riot.mount(document.querySelector('body').children[0], state)[0];
+    [this._mounted] = riot.mount(document.querySelector('body').children[0], state);
 
-    // Return true
-    state.mounted = true;
+    // Mounted true
+    state.mounted = true; // eslint-disable-line no-param-reassign
+
+    // Return null
+    return null;
   }
 }
 
 /**
  * Export new riot frontend function
  *
- * @return {riotFrontend}
+ * @return {RiotFrontend}
  */
-exports = module.exports = window.eden.riot = new riotFrontend();
+window.eden.riot = new RiotFrontend();
+module.exports = window.eden.riot;

@@ -4,7 +4,7 @@ riot.mixin('page', {
   /**
    * On init function
    */
-  'init' : function () {
+  init() {
     // Set value
     this.page = this.eden.get('page');
 
@@ -26,7 +26,7 @@ riot.mixin('page', {
    *
    * @private
    */
-  '__pageEvent' : function (page) {
+  __pageEvent(page) {
     // Set page
     this.page = page;
 
@@ -40,14 +40,14 @@ riot.mixin('page', {
    * @param  {String} key
    * @param  {*}      value
    */
-  '__pageSet' : function (key, value) {
+  __pageSet(key, value) {
     // Get original
-    let page = this.eden.get('page');
+    const page = this.eden.get('page');
 
     // Set key value
     page[key] = value;
 
     // Set
     this.eden.set('page', page);
-  }
+  },
 });

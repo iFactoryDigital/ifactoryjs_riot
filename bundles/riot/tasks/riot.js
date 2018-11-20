@@ -3,7 +3,6 @@
 const fs         = require('fs-extra');
 const gulp       = require('gulp');
 const riot       = require('gulp-riot');
-const path       = require('path');
 const concat     = require('gulp-concat');
 const header     = require('gulp-header');
 const rename     = require('gulp-rename');
@@ -20,18 +19,17 @@ const config = require('config');
  * @priority 1
  */
 class RiotTask {
-
   /**
    * Construct riot task class
    *
    * @param {gulp} gulp
    */
-  constructor (runner) {
+  constructor(runner) {
     // Set private variables
     this._runner = runner;
 
     // Bind methods
-    this.run   = this.run.bind(this);
+    this.run = this.run.bind(this);
     this.watch = this.watch.bind(this);
 
     // Bind private methods
@@ -43,14 +41,14 @@ class RiotTask {
    *
    * @return {Promise}
    */
-  run (files) {
+  run(files) {
     // Create header
     let head    = '';
-    let include = config.get('view.include') || {};
+    const include = config.get('view.include') || {};
 
     // Loop include
-    for (let key in include) {
-      head += 'const ' + key + ' = require ("' + include[key] + '");';
+    for (const key of Object.keys(include)) {
+      head += `const ${key} = require ("${include[key]}");`;
     }
 
     // Return promise
@@ -59,22 +57,22 @@ class RiotTask {
       this._views(files).then(() => {
         // Return promise
         gulp.src([
-          global.appRoot + '/cache/views/**/*.js',
-          global.appRoot + '/cache/views/**/*.tag',
-          '!' + global.appRoot + '/cache/views/email/**/*.tag'
+          `${global.appRoot}/data/cache/views/**/*.js`,
+          `${global.appRoot}/data/cache/views/**/*.tag`,
+          `!${global.appRoot}/data/cache/views/email/**/*.tag`,
         ])
           .pipe(sourcemaps.init())
           .pipe(riot({
-            'compact'    : true,
-            'whitespace' : false
+            compact    : true,
+            whitespace : false,
           }))
           .pipe(concat('tags.js'))
           .pipe(header('const riot = require ("riot");'))
-          .pipe(gulp.dest(global.appRoot + '/cache'))
+          .pipe(gulp.dest(`${global.appRoot}/data/cache`))
           .pipe(header(head))
           .pipe(rename('tags.min.js'))
           .pipe(sourcemaps.write('./'))
-          .pipe(gulp.dest(global.appRoot + '/cache'))
+          .pipe(gulp.dest(`${global.appRoot}/data/cache`))
           .on('end', resolve)
           .on('error', reject);
       });
@@ -86,7 +84,7 @@ class RiotTask {
    *
    * @return {Array}
    */
-  watch () {
+  watch() {
     // Return files
     return 'views/**/*';
   }
@@ -99,9 +97,9 @@ class RiotTask {
    * @return {Promise}
    * @private
    */
-  _views (files) {
+  _views(files) {
     // Remove views cache directory
-    fs.removeSync(global.appRoot + 'cache/views');
+    fs.removeSync(`${global.appRoot}/data/cache/views`);
 
     // Return promise
     return new Promise((resolve, reject) => {
@@ -118,9 +116,9 @@ class RiotTask {
           amended = amended.join('views');
 
           // Alter amended
-          filePath.dirname = amended;
+          filePath.dirname = amended; // eslint-disable-line no-param-reassign
         }))
-        .pipe(gulp.dest(global.appRoot + '/cache/views'))
+        .pipe(gulp.dest(`${global.appRoot}/data/cache/views`))
         .on('end', resolve)
         .on('error', reject);
     });
@@ -132,4 +130,4 @@ class RiotTask {
  *
  * @type {RiotTask}
  */
-exports = module.exports = RiotTask;
+module.exports = RiotTask;

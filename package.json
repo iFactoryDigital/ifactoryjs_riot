@@ -1,6 +1,6 @@
 {
   "name": "@edenjs/riot",
-  "version": "1.0.2",
+  "version": "2.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -24,5 +24,13 @@
     "gulp-riot": "^1.1.5",
     "gulp-sourcemaps": "^2.6.4",
     "riot": "^3.13.0"
+  },
+  "devDependencies": {
+    "@edenjs/eslint-config-eden": "latest",
+    "eslint": "^5.9.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.2",
+    "eslint-plugin-react": "^7.11.1"
   }
 }

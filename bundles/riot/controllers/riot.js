@@ -8,11 +8,10 @@ const Controller = require('controller');
  * Build alert controller
  */
 class RiotController extends Controller {
-
   /**
    * Construct example controller class
    */
-  constructor () {
+  constructor() {
     // Run super
     super();
 
@@ -32,13 +31,13 @@ class RiotController extends Controller {
    *
    * @private
    */
-  async _middleware (req, res, next) {
+  async _middleware(req, res, next) {
     // Create alert function
     req.state = async (opts) => {
       // Send user alert
       return await socket[req.user ? 'user' : 'session'](req.user || req.sessionID, 'state', {
-        'url'  : req.url,
-        'opts' : opts
+        url  : req.url,
+        opts,
       });
     };
 
@@ -52,4 +51,4 @@ class RiotController extends Controller {
  *
  * @type {alertController}
  */
-exports = module.exports = RiotController;
+module.exports = RiotController;

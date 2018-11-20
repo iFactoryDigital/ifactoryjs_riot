@@ -4,7 +4,7 @@ riot.mixin('mount', {
   /**
    * On init function
    */
-  'init' : function () {
+  init() {
     // Set value
     this.mnt = this.eden.get('mount') || {};
 
@@ -26,11 +26,11 @@ riot.mixin('mount', {
    *
    * @private
    */
-  '__mountEvent' : function (mount) {
+  __mountEvent(mount) {
     // Set page
     this.mnt = mount;
 
     // Update view
     if (this.isMounted) this.update();
-  }
+  },
 });

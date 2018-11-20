@@ -4,7 +4,7 @@ riot.mixin('config', {
   /**
    * On init function
    */
-  'init' : function () {
+  init() {
     // Set value
     this.config = this.eden.get('config');
 
@@ -26,11 +26,11 @@ riot.mixin('config', {
    *
    * @private
    */
-  '__configEvent' : function (config) {
+  __configEvent(config) {
     // Set page
     this.config = config;
 
     // Update view
     if (this.isMounted) this.update();
-  }
+  },
 });

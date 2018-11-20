@@ -11,31 +11,33 @@ const Daemon = require('daemon');
  * @express
  */
 class RiotDaemon extends Daemon {
-
   /**
    * Construct riot daemon class
    *
    * @param {eden} eden
    */
-  constructor () {
+  constructor() {
     // Run super
     super();
 
     // Require tags
-    require('cache/tags');
-    require('cache/emails');
+    require('cache/tags'); // eslint-disable-line global-require
+    require('cache/emails'); // eslint-disable-line global-require
 
     // On render
     this.eden.pre('view.compile', (render) => {
       // Alter mount page
-      render.mount.page = render.mount.page.split('views')[1].substr(path.sep.length).split(path.sep).join('-').trim().replace('.tag', '') + '-page';
+      // eslint-disable-next-line no-param-reassign
+      render.mount.page = `${render.mount.page.split('views')[1].substr(path.sep.length).split(path.sep).join('-').trim()
+        .replace('.tag', '')}-page`;
 
       // Alter mount layout
-      render.mount.layout = render.mount.layout + '-layout';
+      // eslint-disable-next-line no-param-reassign
+      render.mount.layout = `${render.mount.layout}-layout`;
     });
 
     // Set eden view
-    this.eden.view  = this.render;
+    this.eden.view = this.render;
     this.eden.email = this.email;
   }
 
@@ -46,7 +48,7 @@ class RiotDaemon extends Daemon {
    *
    * @return {String}
    */
-  render (opts) {
+  render(opts) {
     // Render page
     return riot.render(opts.mount.layout, opts);
   }
@@ -59,9 +61,9 @@ class RiotDaemon extends Daemon {
    *
    * @return Promise
    */
-  email (template, options) {
+  email(template, options) {
     // Return render
-    return riot.render(template + '-email', options);
+    return riot.render(`${template}-email`, options);
   }
 }
 
@@ -70,4 +72,4 @@ class RiotDaemon extends Daemon {
  *
  * @type {RiotDaemon}
  */
-exports = module.exports = RiotDaemon;
+module.exports = RiotDaemon;

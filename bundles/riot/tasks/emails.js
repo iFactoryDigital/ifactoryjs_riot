@@ -18,18 +18,17 @@ const config = require('config');
  * @task emails
  */
 class EmailTask {
-
   /**
    * Construct riot task class
    *
    * @param {gulp} gulp
    */
-  constructor (runner) {
+  constructor(runner) {
     // Set private variables
     this._runner = runner;
 
     // Bind methods
-    this.run   = this.run.bind(this);
+    this.run = this.run.bind(this);
     this.watch = this.watch.bind(this);
   }
 
@@ -38,14 +37,14 @@ class EmailTask {
    *
    * @return {Promise}
    */
-  run (files) {
+  run(files) {
     // Create header
     let head    = '';
-    let include = config.get('view.include') || {};
+    const include = config.get('view.include') || {};
 
     // Loop include
-    for (let key in include) {
-      head += 'const ' + key + ' = require ("' + include[key] + '");';
+    for (const key of Object.keys(include)) {
+      head += `const ${key} = require ("${include[key]}");`;
     }
 
     // Return promise
@@ -54,20 +53,20 @@ class EmailTask {
       this._views(files).then(() => {
         // Return promise
         gulp.src([
-          global.appRoot + '/cache/emails/**/*.tag'
+          `${global.appRoot}/data/cache/emails/**/*.tag`,
         ])
           .pipe(sourcemaps.init())
           .pipe(riot({
-            'compact'    : true,
-            'whitespace' : false
+            compact    : true,
+            whitespace : false,
           }))
           .pipe(concat('emails.js'))
           .pipe(header('const riot = require ("riot");'))
-          .pipe(gulp.dest(global.appRoot + '/cache'))
+          .pipe(gulp.dest(`${global.appRoot}/data/cache`))
           .pipe(header(head))
           .pipe(rename('emails.min.js'))
           .pipe(sourcemaps.write('./'))
-          .pipe(gulp.dest(global.appRoot + '/cache'))
+          .pipe(gulp.dest(`${global.appRoot}/data/cache`))
           .on('end', resolve)
           .on('error', reject);
       });
@@ -79,7 +78,7 @@ class EmailTask {
    *
    * @return {Array}
    */
-  watch () {
+  watch() {
     // Return files
     return 'emails/**/*.tag';
   }
@@ -90,22 +89,22 @@ class EmailTask {
    * @return {Promise}
    * @private
    */
-  _views (files) {
+  _views(files) {
     // Remove views cache directory
-    fs.removeSync(global.appRoot + 'cache/emails');
+    fs.removeSync(`${global.appRoot}/data/cache/emails`);
 
     // Return promise
     return new Promise((resolve, reject) => {
       // Run gulp
       gulp.src(files)
         .pipe(rename((filePath) => {
-          let amended = filePath.dirname.split(path.sep);
+          const amended = filePath.dirname.split(path.sep);
 
           amended.shift();
           amended.shift();
-          filePath.dirname = amended.join(path.sep);
+          filePath.dirname = amended.join(path.sep); // eslint-disable-line no-param-reassign
         }))
-        .pipe(gulp.dest(global.appRoot + '/cache/emails'))
+        .pipe(gulp.dest(`${global.appRoot}/data/cache/emails`))
         .on('end', resolve)
         .on('error', reject);
     });
@@ -117,4 +116,4 @@ class EmailTask {
  *
  * @type {EmailTask}
  */
-exports = module.exports = EmailTask;
+module.exports = EmailTask;
