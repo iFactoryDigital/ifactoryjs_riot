@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/eden-js/riot#readme",
   "dependencies": {
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.0",
     "gulp-concat": "^2.6.1",
     "gulp-header": "^2.0.5",
     "gulp-rename": "^1.4.0",
