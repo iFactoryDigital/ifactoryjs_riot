@@ -1,13 +1,13 @@
 
 // Require dependencies
-const fs         = require('fs-extra');
-const gulp       = require('gulp');
-const path       = require('path');
-const riot       = require('gulp-riot');
-const concat     = require('gulp-concat');
-const header     = require('gulp-header');
-const rename     = require('gulp-rename');
-const sourcemaps = require('gulp-sourcemaps');
+const path           = require('path');
+const fs             = require('fs-extra');
+const gulp           = require('gulp');
+const gulpRiot       = require('gulp-riot');
+const gulpConcat     = require('gulp-concat');
+const gulpHeader     = require('gulp-header');
+const gulpRename     = require('gulp-rename');
+const gulpSourcemaps = require('gulp-sourcemaps');
 
 // Require local dependencies
 const config = require('config');
@@ -37,9 +37,9 @@ class EmailTask {
    *
    * @return {Promise}
    */
-  run(files) {
+  async run(files) {
     // Create header
-    let head    = '';
+    let head      = '';
     const include = config.get('view.include') || {};
 
     // Loop include
@@ -47,29 +47,38 @@ class EmailTask {
       head += `const ${key} = require ("${include[key]}");`;
     }
 
+    await this._views(files);
+
     // Return promise
-    return new Promise((resolve, reject) => {
-      // Await views
-      this._views(files).then(() => {
-        // Return promise
-        gulp.src([
-          `${global.appRoot}/data/cache/emails/**/*.tag`,
-        ])
-          .pipe(sourcemaps.init())
-          .pipe(riot({
-            compact    : true,
-            whitespace : false,
-          }))
-          .pipe(concat('emails.js'))
-          .pipe(header('const riot = require ("riot");'))
-          .pipe(gulp.dest(`${global.appRoot}/data/cache`))
-          .pipe(header(head))
-          .pipe(rename('emails.min.js'))
-          .pipe(sourcemaps.write('./'))
-          .pipe(gulp.dest(`${global.appRoot}/data/cache`))
-          .on('end', resolve)
-          .on('error', reject);
-      });
+    let job = gulp.src([
+      `${global.appRoot}/data/cache/emails/**/*.tag`,
+    ]);
+
+    if (config.get('environment') === 'dev' && !config.get('noSourcemaps')) {
+      job = job.pipe(gulpSourcemaps.init());
+    }
+
+    job = job
+      .pipe(gulpRiot({
+        compact    : true,
+        whitespace : false,
+      }))
+      .pipe(gulpConcat('emails.js'))
+      .pipe(gulpHeader('const riot = require ("riot");'))
+      .pipe(gulp.dest(`${global.appRoot}/data/cache`))
+      .pipe(gulpHeader(head))
+      .pipe(gulpRename('emails.min.js'))
+
+    if (config.get('environment') === 'dev' && !config.get('noSourcemaps')) {
+      job = job.pipe(gulpSourcemaps.write('.'));
+    }
+
+    job = job.pipe(gulp.dest(`${global.appRoot}/data/cache`));
+
+    // Wait for job to end
+    await new Promise((resolve, reject) => {
+      job.once('end', resolve);
+      job.once('error', reject);
     });
   }
 
@@ -89,24 +98,27 @@ class EmailTask {
    * @return {Promise}
    * @private
    */
-  _views(files) {
-    // Remove views cache directory
-    fs.removeSync(`${global.appRoot}/data/cache/emails`);
+  async _views(files) {
+    // Remove emails cache directory
+    await fs.remove(`${global.appRoot}/data/cache/emails`);
 
-    // Return promise
-    return new Promise((resolve, reject) => {
-      // Run gulp
-      gulp.src(files)
-        .pipe(rename((filePath) => {
-          const amended = filePath.dirname.split(path.sep);
+    // Run gulp
+    let job = gulp.src(files);
 
-          amended.shift();
-          amended.shift();
-          filePath.dirname = amended.join(path.sep); // eslint-disable-line no-param-reassign
-        }))
-        .pipe(gulp.dest(`${global.appRoot}/data/cache/emails`))
-        .on('end', resolve)
-        .on('error', reject);
+    job = job.pipe(gulpRename((filePath) => {
+      const amended = filePath.dirname.split(path.sep);
+
+      amended.shift();
+      amended.shift();
+      filePath.dirname = amended.join(path.sep); // eslint-disable-line no-param-reassign
+    }));
+
+    job = job.pipe(gulp.dest(`${global.appRoot}/data/cache/emails`))
+
+    // Wait for job to end
+    await new Promise((resolve, reject) => {
+      job.once('end', resolve);
+      job.once('error', reject);
     });
   }
 }

@@ -1,12 +1,12 @@
 
 // Require dependencies
-const fs         = require('fs-extra');
-const gulp       = require('gulp');
-const riot       = require('gulp-riot');
-const concat     = require('gulp-concat');
-const header     = require('gulp-header');
-const rename     = require('gulp-rename');
-const sourcemaps = require('gulp-sourcemaps');
+const fs             = require('fs-extra');
+const gulp           = require('gulp');
+const gulpRiot       = require('gulp-riot');
+const gulpConcat     = require('gulp-concat');
+const gulpHeader     = require('gulp-header');
+const gulpRename     = require('gulp-rename');
+const gulpSourcemaps = require('gulp-sourcemaps');
 
 // Require local dependencies
 const config = require('config');
@@ -41,9 +41,9 @@ class RiotTask {
    *
    * @return {Promise}
    */
-  run(files) {
+  async run(files) {
     // Create header
-    let head    = '';
+    let head      = '';
     const include = config.get('view.include') || {};
 
     // Loop include
@@ -51,31 +51,42 @@ class RiotTask {
       head += `const ${key} = require ("${include[key]}");`;
     }
 
+    // Await views
+    await this._views(files);
+
     // Return promise
-    return new Promise((resolve, reject) => {
-      // Await views
-      this._views(files).then(() => {
-        // Return promise
-        gulp.src([
-          `${global.appRoot}/data/cache/views/**/*.js`,
-          `${global.appRoot}/data/cache/views/**/*.tag`,
-          `!${global.appRoot}/data/cache/views/email/**/*.tag`,
-        ])
-          .pipe(sourcemaps.init())
-          .pipe(riot({
-            compact    : true,
-            whitespace : false,
-          }))
-          .pipe(concat('tags.js'))
-          .pipe(header('const riot = require ("riot");'))
-          .pipe(gulp.dest(`${global.appRoot}/data/cache`))
-          .pipe(header(head))
-          .pipe(rename('tags.min.js'))
-          .pipe(sourcemaps.write('./'))
-          .pipe(gulp.dest(`${global.appRoot}/data/cache`))
-          .on('end', resolve)
-          .on('error', reject);
-      });
+    let job = gulp.src([
+      `${global.appRoot}/data/cache/views/**/*.js`,
+      `${global.appRoot}/data/cache/views/**/*.tag`,
+      `!${global.appRoot}/data/cache/views/email/**/*.tag`,
+    ]);
+
+    if (config.get('environment') === 'dev' && !config.get('noSourcemaps')) {
+      job = job.pipe(gulpSourcemaps.init());
+    }
+
+    job = job
+      .pipe(gulpRiot({
+        compact    : true,
+        whitespace : false,
+      }))
+      .pipe(gulpConcat('tags.js'))
+      .pipe(gulpHeader('const riot = require ("riot");'))
+      .pipe(gulp.dest(`${global.appRoot}/data/cache`))
+      .pipe(gulpHeader(head))
+      .pipe(gulpRename('tags.min.js'));
+
+
+    if (config.get('environment') === 'dev' && !config.get('noSourcemaps')) {
+      job = job.pipe(gulpSourcemaps.write('.'));
+    }
+
+    job = job.pipe(gulp.dest(`${global.appRoot}/data/cache`));
+
+    // Wait for job to end
+    await new Promise((resolve, reject) => {
+      job.once('end', resolve);
+      job.once('error', reject);
     });
   }
 
@@ -97,30 +108,33 @@ class RiotTask {
    * @return {Promise}
    * @private
    */
-  _views(files) {
+  async _views(files) {
     // Remove views cache directory
-    fs.removeSync(`${global.appRoot}/data/cache/views`);
+    await fs.remove(`${global.appRoot}/data/cache/views`);
 
-    // Return promise
-    return new Promise((resolve, reject) => {
-      // Run gulp
-      gulp.src(files)
-        .pipe(rename((filePath) => {
-          // Get amended
-          let amended = filePath.dirname.replace(/\\/g, '/').split('bundles/');
+    // Run gulp
+    let job = gulp.src(files);
 
-          // Correct path
-          amended = amended.pop();
-          amended = amended.split('views');
-          amended.shift();
-          amended = amended.join('views');
+    job = job.pipe(gulpRename((filePath) => {
+      // Get amended
+      let amended = filePath.dirname.replace(/\\/g, '/').split('bundles/');
 
-          // Alter amended
-          filePath.dirname = amended; // eslint-disable-line no-param-reassign
-        }))
-        .pipe(gulp.dest(`${global.appRoot}/data/cache/views`))
-        .on('end', resolve)
-        .on('error', reject);
+      // Correct path
+      amended = amended.pop();
+      amended = amended.split('views');
+      amended.shift();
+      amended = amended.join('views');
+
+      // Alter amended
+      filePath.dirname = amended; // eslint-disable-line no-param-reassign
+    }));
+
+    job = job.pipe(gulp.dest(`${global.appRoot}/data/cache/views`))
+
+    // Wait for job to end
+    await new Promise((resolve, reject) => {
+      job.once('end', resolve);
+      job.once('error', reject);
     });
   }
 }
