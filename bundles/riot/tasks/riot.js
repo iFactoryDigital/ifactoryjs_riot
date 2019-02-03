@@ -129,7 +129,7 @@ class RiotTask {
       filePath.dirname = amended; // eslint-disable-line no-param-reassign
     }));
 
-    job = job.pipe(gulp.dest(`${global.appRoot}/data/cache/views`))
+    job = job.pipe(gulp.dest(`${global.appRoot}/data/cache/views`));
 
     // Wait for job to end
     await new Promise((resolve, reject) => {
