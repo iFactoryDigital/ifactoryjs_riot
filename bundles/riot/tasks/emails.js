@@ -67,7 +67,7 @@ class EmailTask {
       .pipe(gulpHeader('const riot = require ("riot");'))
       .pipe(gulp.dest(`${global.appRoot}/data/cache`))
       .pipe(gulpHeader(head))
-      .pipe(gulpRename('emails.min.js'))
+      .pipe(gulpRename('emails.min.js'));
 
     if (config.get('environment') === 'dev' && !config.get('noSourcemaps')) {
       job = job.pipe(gulpSourcemaps.write('.'));
@@ -113,7 +113,7 @@ class EmailTask {
       filePath.dirname = amended.join(path.sep); // eslint-disable-line no-param-reassign
     }));
 
-    job = job.pipe(gulp.dest(`${global.appRoot}/data/cache/emails`))
+    job = job.pipe(gulp.dest(`${global.appRoot}/data/cache/emails`));
 
     // Wait for job to end
     await new Promise((resolve, reject) => {
