@@ -105,12 +105,19 @@ class EmailTask {
     // Run gulp
     let job = gulp.src(files);
 
+    // pipe rename
     job = job.pipe(gulpRename((filePath) => {
-      const amended = filePath.dirname.split(path.sep);
+      // Get amended
+      let amended = filePath.dirname.replace(/\\/g, '/').split('bundles/');
 
+      // Correct path
+      amended = amended.pop();
+      amended = amended.split('views');
       amended.shift();
-      amended.shift();
-      filePath.dirname = amended.join(path.sep); // eslint-disable-line no-param-reassign
+      amended = amended.join('views');
+
+      // Alter amended
+      filePath.dirname = amended; // eslint-disable-line no-param-reassign
     }));
 
     job = job.pipe(gulp.dest(`${global.appRoot}/data/cache/emails`));
