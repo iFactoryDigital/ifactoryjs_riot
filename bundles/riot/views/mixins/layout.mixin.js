@@ -6,7 +6,6 @@ riot.mixin('layout', {
    */
   init() {
     // Set private variables
-    this.__page = false;
     this.__init = this.__init || {};
 
     // Set store
@@ -63,16 +62,16 @@ riot.mixin('layout', {
     // Check mount
     if (!opts.mount) return this.update();
 
+    // set view
+    this.view = 'loading-page';
+
+    // update
+    this.update();
+
     // Set page
     this.view = opts.mount.page;
 
     // Update view
     this.update();
-
-    // Trigger mount
-    if (this.refs.page) this.refs.page.trigger('mount');
-
-    // Return null
-    return null;
   },
 });
