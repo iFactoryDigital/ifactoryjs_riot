@@ -6,9 +6,6 @@ const Daemon = require('daemon');
 
 /**
  * Build riot dameon class
- *
- * @compute
- * @express
  */
 class RiotDaemon extends Daemon {
   /**
@@ -21,23 +18,30 @@ class RiotDaemon extends Daemon {
     super();
 
     // Require tags
-    require('cache/tags'); // eslint-disable-line global-require
     require('cache/emails'); // eslint-disable-line global-require
 
     // On render
-    this.eden.pre('view.compile', (render) => {
-      // Alter mount page
-      // eslint-disable-next-line no-param-reassign
-      render.mount.page = `${render.mount.page.split('views')[1].substr(path.sep.length).split(path.sep).join('-').trim()
-        .replace('.tag', '')}-page`;
+    if (this.eden.router) {
+      // require tags for router threads
+      require('cache/tags'); // eslint-disable-line global-require
 
-      // Alter mount layout
-      // eslint-disable-next-line no-param-reassign
-      render.mount.layout = `${render.mount.layout}-layout`;
-    });
+      // add pre for router only threads
+      this.eden.pre('view.compile', (render) => {
+        // Alter mount page
+        // eslint-disable-next-line no-param-reassign
+        render.mount.page = render.mount.page.includes('views') ? `${render.mount.page.split('views')[1].substr(path.sep.length).split(path.sep).join('-').trim()
+          .replace('.tag', '')}-page` : render.mount.page;
+
+        // Alter mount layout
+        // eslint-disable-next-line no-param-reassign
+        render.mount.layout = render.mount.layout.includes('-layout') ? render.mount.layout : `${render.mount.layout}-layout`;
+      });
+
+      // set view for router threads
+      this.eden.view = this.render;
+    }
 
     // Set eden view
-    this.eden.view = this.render;
     this.eden.email = this.email;
   }
 
