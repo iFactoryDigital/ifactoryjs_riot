@@ -1,7 +1,7 @@
 const config = {};
 
 config.view = {
-  engine  : 'riot',
+  engine  : 'tag',
   include : {},
 };
 
