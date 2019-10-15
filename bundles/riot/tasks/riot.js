@@ -56,7 +56,7 @@ class RiotTask {
 
     // Return promise
     let job = gulp.src([
-      `${global.appRoot}/data/cache/views/**/*.js`,
+      `${global.appRoot}/data/cache/views/**/*.mixin.js`,
       `${global.appRoot}/data/cache/views/**/*.tag`,
       `!${global.appRoot}/data/cache/views/email/**/*.tag`,
     ]);

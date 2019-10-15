@@ -1,5 +1,5 @@
 {
-  "name": "@edenjs/riot-v3",
+  "name": "@ifactoryjs/riot",
   "description": "",
   "version": "2.0.11",
   "dependencies": {
@@ -20,14 +20,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/eden-js/riot.git"
+    "url": "git+https://github.com/ifactorydigital/ifactoryjs_riot.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/eden-js/riot/issues"
+    "url": "https://github.com/ifactorydigital/ifactoryjs_riot/issues"
   },
-  "homepage": "https://github.com/eden-js/riot#readme",
+  "homepage": "https://github.com/ifactorydigital/ifactoryjs_riot#readme",
   "devDependencies": {
     "@edenjs/eslint-config-eden": "^2.0.14",
     "eslint": "^5.13.0",
