@@ -42,7 +42,8 @@ class RiotDaemon extends Daemon {
     }
 
     // Set eden view
-    this.eden.email = this.email;
+    this.eden.email        = this.email;
+    this.eden.renderString = this.renderString;
   }
 
   /**
@@ -68,6 +69,20 @@ class RiotDaemon extends Daemon {
   email(template, options) {
     // Return render
     return riot.render(`${template}-email`, options);
+  }
+
+  /**
+   * Render pdf template
+   *
+   * @param  {String} template
+   * @param  {Options} options
+   *
+   * @return Promise
+   */
+  renderString(template, options) {
+    console.log(template);
+    // Return render
+    return riot.render(`${template}-string`, options);
   }
 }
 
